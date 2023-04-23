@@ -44,9 +44,9 @@ fn main() -> ! {
             defmt::println!("Worst SQI: {}", worst_sqi);
             for _ in 0..(7 - worst_sqi) {
                 led_t1_conn.set_low().unwrap();
-                cortex_m::asm::delay(300_000);
+                cortex_m::asm::delay(700_000);
                 led_t1_conn.set_high().unwrap();
-                cortex_m::asm::delay(300_000);
+                cortex_m::asm::delay(700_000);
             }
         } else {
             led_t1_conn.set_low().unwrap();
