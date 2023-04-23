@@ -675,7 +675,7 @@
       "idf": "",
       "netlist": "",
       "specctra_dsn": "",
-      "step": "",
+      "step": "home-media-converter.step",
       "vrml": ""
     },
     "page_layout_descr_file": ""
