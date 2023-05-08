@@ -11,11 +11,23 @@ const MMD1F: u8 = 0x1F;
 pub enum T1Registers {
     Regcr = 0xD,
     Addar = 0xE,
+    MiiReg16 = 0x16,
     SqiReq1 = 0x871,
+    PrbsStatus1 = 0x618,
+    PrbsCtrl1 = 0x619,
+    PrbsCtrl2 = 0x61A,
+    PrbsCtrl3 = 0x61B,
+    PrbsStatus2 = 0x61C,
+    PrbsStatus3 = 0x61D,
+    PrbsStatus4 = 0x61E,
+    PrbsStatus6 = 0x620,
+    PrbsStatus8 = 0x622,
+    PrbsStatus9 = 0x623,
+    PrbsCtrl4 = 0x624,
 }
 
 /// Software SPI since there is no half-duplex implementation in the HAL.
-pub(crate) struct Smi {
+pub struct Smi {
     mdc: PA5<Output<PushPull>>,
     mdio: PA7<Output<OpenDrain>>,
 }
@@ -56,7 +68,7 @@ impl Smi {
         recv
     }
 
-    pub fn read_extended(&mut self, device_address: u8, register_address: u16) -> u16 {
+    fn load_extended_register(&mut self, device_address: u8, register_address: u16) {
         self.write(device_address, T1Registers::Regcr as u8, MMD1F as u16);
         self.write(device_address, T1Registers::Addar as u8, register_address);
         self.write(
@@ -64,6 +76,9 @@ impl Smi {
             T1Registers::Regcr as u8,
             MMD1F as u16 | 0x4000,
         );
+    }
+    pub fn read_extended(&mut self, device_address: u8, register_address: u16) -> u16 {
+        self.load_extended_register(device_address, register_address);
         self.read(device_address, T1Registers::Addar as u8)
     }
 
@@ -85,5 +100,10 @@ impl Smi {
             cortex_m::asm::delay(MDC_DELAY_CYCLES);
         }
         self.mdio.set_high().unwrap();
+    }
+
+    pub fn write_extended(&mut self, device_address: u8, register_address: u16, value: u16) {
+        self.load_extended_register(device_address, register_address);
+        self.write(device_address, T1Registers::Addar as u8, value);
     }
 }

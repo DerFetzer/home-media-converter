@@ -5,9 +5,7 @@ use home_media_converter as _;
 use stm32f0xx_hal::pac::Peripherals; // global logger + panicking-behavior + memory layout
 use stm32f0xx_hal::prelude::*;
 
-use crate::smi::{Smi, T1Registers};
-
-mod smi;
+use home_media_converter::smi::{Smi, T1Registers};
 
 #[cortex_m_rt::entry]
 fn main() -> ! {
